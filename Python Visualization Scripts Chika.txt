@@ -1,0 +1,101 @@
+# General imports
+import pandas as pd
+import numpy as np
+import warnings
+warnings.filterwarnings('ignore')
+
+# Matplotlip is a library for data visualization (create charts)
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+import seaborn as sns #seaborn is a library for data visualization (create charts)
+
+# Read the Excel file
+df = pd.read_csv('Start up failure cleaned/regulation_hypothesis.csv', delimiter=';')
+df
+
+# Replace NaN values with 0 for plotting purposes
+df.fillna(0, inplace=True)
+
+# Bar Graph: Total Failures and Failures Due to Regulation
+x = np.arange(len(df['industry']))  # X-axis positions
+width = 0.35  # Width of the bars
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Plot bars
+bar1 = ax.bar(x - width/2, df['total_failures'], width, label='Total Failures', color='blue')
+bar2 = ax.bar(x + width/2, df['failures_due_to_regulation'], width, label='Failures Due to Regulation', color='Navy')
+
+# Add labels, title, and legend
+ax.set_xlabel('Industry')
+ax.set_ylabel('Number of Failures')
+ax.set_title('Total Failures and Failures Due to Regulation by Industry')
+ax.set_xticks(x)
+ax.set_xticklabels(df['industry'], rotation=45, ha='right')
+ax.legend()
+
+# Annotate bars with values
+for bar in bar1 + bar2:
+    height = bar.get_height()
+    ax.annotate(f'{height:.0f}', xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()
+
+# Line Chart: Regulatory Failure Rate
+fig, ax = plt.subplots(figsize=(10, 6))
+# Plot line chart
+ax.plot(df['industry'], df['regulatory_failure_rate'], marker='o', color='Navy', label='Regulatory Failure Rate')
+
+# Add labels, title, and legend
+ax.set_xlabel('Industry')
+ax.set_ylabel('Regulatory Failure Rate (%)')
+ax.set_title('Regulatory Failure Rate by Industry')
+ax.legend()
+
+# Annotate points with values
+for i, rate in enumerate(df['regulatory_failure_rate']):
+    ax.annotate(f'{rate:.2f}', xy=(df['industry'][i], rate), xytext=(0, 5),
+                textcoords="offset points", ha='center', va='bottom')
+
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+
+# Define the desired order of industries
+industry_order = ['Information', 'Retail', 'Healthcare', 'Finance_Insurance', 'Manufacturing', 'Food_service']
+
+# Convert 'industry' to a categorical type with the specified order
+df['industry'] = pd.Categorical(df['industry'], categories=industry_order, ordered=True)
+
+# Sort the DataFrame based on the ordered categories
+df.sort_values('industry', inplace=True)
+
+# Bar Graph: Total Failures and Failures Due to Regulation
+x = np.arange(len(df['industry']))  # X-axis positions
+width = 0.35  # Width of the bars
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Plot bars
+bar1 = ax.bar(x - width/2, df['total_failures'], width, label='Total Failures', color='blue')
+bar2 = ax.bar(x + width/2, df['failures_due_to_regulation'], width, label='Failures Due to Regulation', color='Navy')
+
+# Add labels, title, and legend
+ax.set_xlabel('Industry')
+ax.set_ylabel('Number of Failures')
+ax.set_title('Ratio of Total Failures to Failures Due to Regulation by Industry')
+ax.set_xticks(x)
+ax.set_xticklabels(df['industry'], rotation=45, ha='right')
+ax.legend()
+
+# Annotate bars with values
+for bar in bar1 + bar2:
+    height = bar.get_height()
+    ax.annotate(f'{height:.0f}', xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
+
+plt.tight_layout()
+plt.show()

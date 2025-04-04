@@ -1,0 +1,42 @@
+-- Step 1: Combine all dataframes into a single table
+WITH combined_data AS (
+    SELECT 'Finance_Insurance' AS industry, giants, no_budget, competition, poor_market_fit, acquisition_stagnation, 
+           platform_dependency, monetization_failure, niche_limits, execution_flaws, trend_shifts, trust_issue, 
+           regulatory_pressure, overhype, amount_raised, start_year, end_year
+    FROM finance_insurance
+    UNION ALL
+    SELECT 'Food and Service' AS industry, giants, no_budget, competition, poor_market_fit, acquisition_stagnation, 
+            platform_dependency, monetization_failure, niche_limits, execution_flaws, trend_shifts, trust_issues, regulatory_pressure, 
+            amount_raised, start_year, end_year, overhype
+    FROM food_service
+    UNION ALL
+    SELECT 'Healthcare' AS industry, giants, no_budget, competition, poor_market_fit, acquisition_stagnation, 
+           platform_dependency, monetization_failure, niche_limits, execution_flaws, trend_shifts, trust_issue, 
+           regulatory_pressure, overhype, amount_raised, start_year, end_year
+    FROM healthcare
+    UNION ALL
+    SELECT 'Information' AS industry, giants, no_budget, competition, poor_market_fit, acquisition_stagnation, 
+           platform_dependency, monetization_failure, niche_limits, execution_flaws, trend_shifts, trust_issue, 
+           regulatory_pressure, overhype, amount_raised, start_year, end_year
+    FROM information
+    UNION ALL
+    SELECT 'Manufacturing' AS industry, giants, no_budget, competition, poor_market_fit, acquisition_stagnation, 
+           platform_dependency, monetization_failure, niche_limits, execution_flaws, trend_shifts, trust_issue, 
+           regulatory_pressure, overhype, amount_raised, start_year, end_year
+    FROM manufacturing
+    UNION ALL
+    SELECT 'Retail' AS industry, giants, no_budget, competition, poor_market_fit, acquisition_stagnation, 
+           platform_dependency, monetization_failure, niche_limits, execution_flaws, trend_shifts, trust_issue, 
+           regulatory_pressure, overhype, amount_raised, start_year, end_year
+    FROM retail
+)
+
+-- Step 2: Calculate failure rates due to regulatory pressure for each industry
+SELECT 
+    industry,
+    COUNT(*) AS total_failures,
+    SUM(regulatory_pressure) AS failures_due_to_regulation,
+    ROUND(SUM(regulatory_pressure) * 100.0 / COUNT(*), 2) AS regulatory_failure_rate
+FROM combined_data
+GROUP BY industry
+ORDER BY regulatory_failure_rate DESC;
